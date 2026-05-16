@@ -1,19 +1,19 @@
 <div align="center">
-  <img alt="logo" src="https://raw.githubusercontent.com/idealista/prom2teams/master/logo.gif">
+  <img alt="logo" src="https://raw.githubusercontent.com/idealista/prom2notify/master/logo.gif">
 
-  [![Build Status](https://travis-ci.com/idealista/prom2teams.svg?branch=master)](https://travis-ci.com/idealista/prom2teams)
-  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=idealista_prom2teams&metric=alert_status)](https://sonarcloud.io/dashboard?id=idealista_prom2teams)
-  [![Docker Build Status](https://img.shields.io/docker/build/idealista/prom2teams.svg)](https://hub.docker.com/r/idealista/prom2teams/) 
-  [![Docker Hub Pulls](https://img.shields.io/docker/pulls/idealista/prom2teams.svg)](https://hub.docker.com/r/idealista/prom2teams/)
+  [![Build Status](https://travis-ci.com/idealista/prom2notify.svg?branch=master)](https://travis-ci.com/idealista/prom2notify)
+  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=idealista_prom2notify&metric=alert_status)](https://sonarcloud.io/dashboard?id=idealista_prom2notify)
+  [![Docker Build Status](https://img.shields.io/docker/build/idealista/prom2notify.svg)](https://hub.docker.com/r/idealista/prom2notify/) 
+  [![Docker Hub Pulls](https://img.shields.io/docker/pulls/idealista/prom2notify.svg)](https://hub.docker.com/r/idealista/prom2notify/)
 </div>
 
-# prom2teams: Prometheus Alertmanager/Microsoft Teams integration
+# prom2notify: Prometheus Alertmanager/Microsoft Teams integration
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/idealista/prom2teams/master/assets/example.png" alt="Alert example" style="width: 600px;"/>
+  <img src="https://raw.githubusercontent.com/idealista/prom2notify/master/assets/example.png" alt="Alert example" style="width: 600px;"/>
 </p>
 
-**prom2teams** is a service built with Python that receives alert notifications from a previously configured [Prometheus Alertmanager](https://github.com/prometheus/alertmanager) instance and forwards it to [Microsoft Teams](https://teams.microsoft.com/) using defined connectors.
+**prom2notify** is a service built with Python that receives alert notifications from a previously configured [Prometheus Alertmanager](https://github.com/prometheus/alertmanager) instance and forwards it to [Microsoft Teams](https://teams.microsoft.com/) using defined connectors.
 
 It presents grouping of alerts, labels/annotations exclusion and a Teams' alert retry policy among its key features.
 
@@ -46,10 +46,10 @@ Newer versions of _Prometheus/Python/pip_ should work but could also present iss
 
 ### Installing
 
-prom2teams is present on [PyPI](https://pypi.python.org/pypi/prom2teams), so could be installed using pip3:
+prom2notify is present on [PyPI](https://pypi.python.org/pypi/prom2notify), so could be installed using pip3:
 
 ```bash
-$ pip3 install prom2teams
+$ pip3 install prom2notify
 ```
 
 **Note:** Works since v1.1.1
@@ -60,22 +60,22 @@ $ pip3 install prom2teams
 
 ```bash
 # To start the server (enable metrics, config file path , group alerts by, log file path, log level and Jinja2 template path are optional arguments):
-$ prom2teams [--enablemetrics] [--configpath <config file path>] [--groupalertsby ("name"|"description"|"instance"|"severity"|"summary")] [--logfilepath <log file path>] [--loglevel (DEBUG|INFO|WARNING|ERROR|CRITICAL)] [--templatepath <Jinja2 template file path>]
+$ prom2notify [--enablemetrics] [--configpath <config file path>] [--groupalertsby ("name"|"description"|"instance"|"severity"|"summary")] [--logfilepath <log file path>] [--loglevel (DEBUG|INFO|WARNING|ERROR|CRITICAL)] [--templatepath <Jinja2 template file path>]
 
 # To show the help message:
-$ prom2teams --help
+$ prom2notify --help
 ```
 Other options to start the service are:
 
 ```bash
 export APP_CONFIG_FILE=<config file path>
-$ prom2teams
+$ prom2notify
 ```
 **Note:** Grouping alerts works since v2.2.1
 
 ### Docker image
 
-Every new Prom2teams release, a new Docker image is built in our [Dockerhub](https://hub.docker.com/r/idealista/prom2teams). We strongly recommend you to use the images with the version tag, though it will be possible to use them without it.
+Every new Prom2teams release, a new Docker image is built in our [Dockerhub](https://hub.docker.com/r/idealista/prom2notify). We strongly recommend you to use the images with the version tag, though it will be possible to use them without it.
 
 There are two things you need to bear in mind when creating a Prom2teams container:
 
@@ -86,15 +86,15 @@ There are two things you need to bear in mind when creating a Prom2teams contain
 So a sample Docker run command would be:
 
 ```bash
-$ docker run -it -d -e PROM2TEAMS_GROUP_ALERTS_BY=FIELD_YOU_WANT_TO_GROUP_BY -e PROM2TEAMS_CONNECTOR="CONNECTOR_URL" -p 8089:8089 idealista/prom2teams:VERSION
+$ docker run -it -d -e PROM2TEAMS_GROUP_ALERTS_BY=FIELD_YOU_WANT_TO_GROUP_BY -e PROM2TEAMS_CONNECTOR="CONNECTOR_URL" -p 8089:8089 idealista/prom2notify:VERSION
 ```
 
 #### Provide custom config file
 
-If you prefer to use your own config file, you just need to provide it as a Docker volume to the container and map it to `/opt/prom2teams/config.ini`. Sample:
+If you prefer to use your own config file, you just need to provide it as a Docker volume to the container and map it to `/opt/prom2notify/config.ini`. Sample:
 
 ```bash
-$ docker run -it -d -v pathToTheLocalConfigFile:/opt/prom2teams/config.ini -p 8089:8089 idealista/prom2teams:VERSION
+$ docker run -it -d -v pathToTheLocalConfigFile:/opt/prom2notify/config.ini -p 8089:8089 idealista/prom2notify:VERSION
 ```
 
 ### Helm chart
@@ -104,7 +104,7 @@ $ docker run -it -d -v pathToTheLocalConfigFile:/opt/prom2teams/config.ini -p 80
 To install the chart with the release name `my-release` run:
 
 ```bash
-$ helm install --name my-release /location/of/prom2teams_ROOT/helm
+$ helm install --name my-release /location/of/prom2notify_ROOT/helm
 ```
 
 After a few seconds, Prom2Teams should be running.
@@ -138,7 +138,7 @@ The following table lists the configurable parameters of the Prom2teams chart an
 
 | Parameter                                       | Description                                                                                                        | Default
 | ---                                             | ---                                                                                                                | ---
-| `image.repository`                              | The image repository to pull from                                                                                  | `idealista/prom2teams`
+| `image.repository`                              | The image repository to pull from                                                                                  | `idealista/prom2notify`
 | `image.tag`                                     | The image tag to pull                                                                                              | `<empty>`
 | `image.pullPolicy`                              | The image pull policy                                                                                              | `IfNotPresent`
 | `resources.requests.cpu`                        | CPU requested for being run in a node                                                                              | `100m`
@@ -147,26 +147,26 @@ The following table lists the configurable parameters of the Prom2teams chart an
 | `resources.limits.memory`                       | Memory limit                                                                                                       | `200Mi`
 | `service.type`                                  | Service Map (NodePort/ClusterIP)                                                                                   | `ClusterIP`
 | `service.port`                                  | Service Port                                                                                                       | `8089`
-| `prom2teams.host`                               | IP to bind to                                                                                                      | `0.0.0.0`
-| `prom2teams.port`                               | Port to bind to                                                                                                    | `8089`
-| `prom2teams.connector`                          | Connector URL                                                                                                      | `<empty>`
-| `prom2teams.connectors`                         | A map where the keys are the connector names and the values are the connector webhook urls                         | `{}`
-| `prom2teams.group_alerts_by`                    | Group_alerts_by field                                                                                              | `<empty>`
-| `prom2teams.loglevel`                           | Loglevel                                                                                                           | `INFO`
-| `prom2teams.templatepath`                       | Custom Template path (files/teams.j2)                                                                              | `/opt/prom2teams/helmconfig/teams.j2`
-| `prom2teams.config`                             | Config (specific to Helm)                                                                                          | `/opt/prom2teams/helmconfig/config.ini`
-| `prom2teams.extraEnv`                           | Dictionary of arbitrary additional environment variables for deployment (eg. `HTTP_PROXY`)                         | `<empty>`
+| `prom2notify.host`                               | IP to bind to                                                                                                      | `0.0.0.0`
+| `prom2notify.port`                               | Port to bind to                                                                                                    | `8089`
+| `prom2notify.connector`                          | Connector URL                                                                                                      | `<empty>`
+| `prom2notify.connectors`                         | A map where the keys are the connector names and the values are the connector webhook urls                         | `{}`
+| `prom2notify.group_alerts_by`                    | Group_alerts_by field                                                                                              | `<empty>`
+| `prom2notify.loglevel`                           | Loglevel                                                                                                           | `INFO`
+| `prom2notify.templatepath`                       | Custom Template path (files/teams.j2)                                                                              | `/opt/prom2notify/helmconfig/teams.j2`
+| `prom2notify.config`                             | Config (specific to Helm)                                                                                          | `/opt/prom2notify/helmconfig/config.ini`
+| `prom2notify.extraEnv`                           | Dictionary of arbitrary additional environment variables for deployment (eg. `HTTP_PROXY`)                         | `<empty>`
 
 ### Production
 
 For production environments you should prefer using a WSGI server. [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/)
 dependency is installed for an easy usage. Some considerations must be taken to use it:
 
-The binary `prom2teams_uwsgi` launches the app using the uwsgi server. Due to some incompatibilities with [wheel](https://github.com/pypa/wheel)
-you must install `prom2teams` using `sudo pip install --no-binary :all: prom2teams` (https://github.com/pypa/wheel/issues/92)
+The binary `prom2notify_uwsgi` launches the app using the uwsgi server. Due to some incompatibilities with [wheel](https://github.com/pypa/wheel)
+you must install `prom2notify` using `sudo pip install --no-binary :all: prom2notify` (https://github.com/pypa/wheel/issues/92)
 
 ```bash
-$ prom2teams_uwsgi <path to uwsgi ini config>
+$ prom2notify_uwsgi <path to uwsgi ini config>
 ```
 
 And `uwsgi` would look like:
@@ -177,18 +177,18 @@ master = true
 processes = 5
 #socket = 0.0.0.0:8001
 #protocol = http
-socket = /tmp/prom2teams.sock
+socket = /tmp/prom2notify.sock
 chmod-socket = 777
 vacuum = true
 env = APP_ENVIRONMENT=pro
-env = APP_CONFIG_FILE=/etc/default/prom2teams.ini
+env = APP_CONFIG_FILE=/etc/default/prom2notify.ini
 ```
 
 Consider not provide `chdir` property neither `module` property.
 
-Also you can set the `module` file, by doing a symbolic link: `sudo mkdir -p /usr/local/etc/prom2teams/ && sudo ln -sf /usr/local/lib/python3.7/dist-packages/usr/local/etc/prom2teams/wsgi.py /usr/local/etc/prom2teams/wsgi.py` (check your dist-packages folder)
+Also you can set the `module` file, by doing a symbolic link: `sudo mkdir -p /usr/local/etc/prom2notify/ && sudo ln -sf /usr/local/lib/python3.7/dist-packages/usr/local/etc/prom2notify/wsgi.py /usr/local/etc/prom2notify/wsgi.py` (check your dist-packages folder)
 
-Another approach is to provide yourself the `module` file [module example](bin/wsgi.py) and the `bin` uwsgi call [uwsgi example](bin/prom2teams_uwsgi)
+Another approach is to provide yourself the `module` file [module example](bin/wsgi.py) and the `bin` uwsgi call [uwsgi example](bin/prom2notify_uwsgi)
 
 **Note:** default log level is DEBUG. Messages are redirected to stdout. To enable file log, set the env APP_ENVIRONMENT=(pro|pre)
 
@@ -210,10 +210,10 @@ Port: <host port> # default: 8089
 
 [Log]
 Level: <loglevel (DEBUG|INFO|WARNING|ERROR|CRITICAL)> # default: DEBUG
-Path: <log file path>  # default: /var/log/prom2teams/prom2teams.log
+Path: <log file path>  # default: /var/log/prom2notify/prom2notify.log
 
 [Template]
-Path: <Jinja2 template path> # default: app resources default template (./prom2teams/resources/templates/teams.j2)
+Path: <Jinja2 template path> # default: app resources default template (./prom2notify/resources/templates/teams.j2)
 
 [Group Alerts]
 Field: <Field to group alerts by> # alerts won't be grouped by default
@@ -235,14 +235,14 @@ MaxPayload: <Teams client payload limit in bytes> # default: 24KB
 
 ### Configuring Prometheus
 
-The [webhook receiver](https://prometheus.io/docs/alerting/configuration/#<webhook_config>) in Prometheus allows configuring a prom2teams server.
+The [webhook receiver](https://prometheus.io/docs/alerting/configuration/#<webhook_config>) in Prometheus allows configuring a prom2notify server.
 
 The url is formed by the host and port defined in the previous step.
 
 **Note:** In order to keep compatibility with previous versions, v2.0 keep attending the default connector ("Connector") in the endpoint 0.0.0.0:8089. This will be removed in future versions.   
 
 ```
-// The prom2teams endpoint to send HTTP POST requests to.
+// The prom2notify endpoint to send HTTP POST requests to.
 url: 0.0.0.0:8089/v2/<Connector1>
 ```
 
@@ -250,12 +250,12 @@ url: 0.0.0.0:8089/v2/<Connector1>
 
 Prom2teams uses Flask and, to have the service monitored, we use @rycus66's [Prometheus Flask Exporter](https://github.com/rycus86/prometheus_flask_exporter). This will enable an endpoint in `/metrics` where you could find interesting metrics to monitor such as number of responses with a certain status. To enable this endpoint, just either:
 
-- Use the `--enablemetrics` or `-m` flag when launching prom2teams.
+- Use the `--enablemetrics` or `-m` flag when launching prom2notify.
 - Set the environment variable `PROM2TEAMS_PROMETHEUS_METRICS=true`.
 
 ### Templating
 
-prom2teams provides a [default template](prom2teams/resources/templates/teams.j2) built with [Jinja2](http://jinja.pocoo.org/docs/2.10/) to render messages in Microsoft Teams. This template could be overrided using the 'templatepath' argument ('--templatepath <Jinja2 template file path>') during the application start.
+prom2notify provides a [default template](prom2notify/resources/templates/teams.j2) built with [Jinja2](http://jinja.pocoo.org/docs/2.10/) to render messages in Microsoft Teams. This template could be overrided using the 'templatepath' argument ('--templatepath <Jinja2 template file path>') during the application start.
 
 Some fields are considered mandatory when received from Alert Manager.
 If such a field is not included a default value of 'unknown' is assigned.
@@ -270,18 +270,18 @@ are supported by Alertmanager 0.19.0 or greater.
 
 Accessing to `<Host>:<Port>` (e.g. `localhost:8089`) in a web browser shows the API v1 documentation.
 
-<img src="https://raw.githubusercontent.com/idealista/prom2teams/master/assets/swagger_v1.png" alt="Swagger UI" style="width: 600px;"/>
+<img src="https://raw.githubusercontent.com/idealista/prom2notify/master/assets/swagger_v1.png" alt="Swagger UI" style="width: 600px;"/>
 
 Accessing to `<Host>:<Port>/v2` (e.g. `localhost:8089/v2`) in a web browser shows the API v2 documentation.
 
-<img src="https://raw.githubusercontent.com/idealista/prom2teams/master/assets/swagger_v2.png" alt="Swagger UI" style="width: 600px;"/>
+<img src="https://raw.githubusercontent.com/idealista/prom2notify/master/assets/swagger_v2.png" alt="Swagger UI" style="width: 600px;"/>
 
 ## Testing
 
 To run the test suite you should type the following:
 
 ```bash
-// After cloning prom2teams :)
+// After cloning prom2notify :)
 $ pip install -r requirements.txt
 $ python3 -m unittest discover tests
 $ cd tests/e2e
@@ -294,7 +294,7 @@ $ ./test.sh
 
 ## Versioning
 
-For the versions available, see the [tags on this repository](https://github.com/idealista/prom2teams/tags).
+For the versions available, see the [tags on this repository](https://github.com/idealista/prom2notify/tags).
 
 Additionaly you can see what change in each version in the [CHANGELOG.md](CHANGELOG.md) file.
 
@@ -302,7 +302,7 @@ Additionaly you can see what change in each version in the [CHANGELOG.md](CHANGE
 
 * **Idealista** - *Work with* - [idealista](https://github.com/idealista)
 
-See also the list of [contributors](https://github.com/idealista/prom2teams/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/idealista/prom2notify/contributors) who participated in this project.
 
 ## License
 

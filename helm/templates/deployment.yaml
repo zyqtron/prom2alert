@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "prom2teams.fullname" . }}
+  name: {{ include "prom2notify.fullname" . }}
   labels:
-{{ include "prom2teams.labels" . | indent 4 }}
+{{ include "prom2notify.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "prom2teams.name" . }}
+      app.kubernetes.io/name: {{ include "prom2notify.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "prom2teams.name" . }}
+        app.kubernetes.io/name: {{ include "prom2notify.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
     {{- with .Values.imagePullSecrets }}
@@ -23,7 +23,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: prom2teams-config
+            name: prom2notify-config
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -37,23 +37,23 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: config
-              mountPath: /opt/prom2teams/helmconfig/
+              mountPath: /opt/prom2notify/helmconfig/
           env:
           - name: APP_CONFIG_FILE
-            value: {{ .Values.prom2teams.config | quote }}
+            value: {{ .Values.prom2notify.config | quote }}
           - name: PROM2TEAMS_PORT
-            value: {{ .Values.prom2teams.port | quote }}
+            value: {{ .Values.prom2notify.port | quote }}
           - name: PROM2TEAMS_HOST
-            value: {{ .Values.prom2teams.host | quote }}
+            value: {{ .Values.prom2notify.host | quote }}
           - name: PROM2TEAMS_CONNECTOR
-            value: {{ .Values.prom2teams.connector | quote }}
+            value: {{ .Values.prom2notify.connector | quote }}
           - name: PROM2TEAMS_GROUP_ALERTS_BY
-            value: {{ .Values.prom2teams.group_alerts_by | quote }}
+            value: {{ .Values.prom2notify.group_alerts_by | quote }}
           - name: PROM2TEAMS_LOGLEVEL
-            value: {{ .Values.prom2teams.loglevel }}
+            value: {{ .Values.prom2notify.loglevel }}
           - name: PROMETHEUS_MULTIPROC_PORT
-            value: {{ .Values.prom2teams.monitoring_port | quote }}
-          {{- range $key, $value := .Values.prom2teams.extraEnv }}
+            value: {{ .Values.prom2notify.monitoring_port | quote }}
+          {{- range $key, $value := .Values.prom2notify.extraEnv }}
           - name: "{{ $key }}"
             value: "{{ $value }}"
           {{- end }}

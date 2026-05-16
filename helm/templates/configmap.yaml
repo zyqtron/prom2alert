@@ -1,36 +1,36 @@
 {{- $valid := list "DEBUG" "INFO" "WARNING" "ERROR" "CRITICAL" -}}
-{{- if not (has .Values.prom2teams.loglevel $valid) -}}
+{{- if not (has .Values.prom2notify.loglevel $valid) -}}
 {{- fail "Invalid log level"}}
 {{- end -}}
-{{- if and .Values.prom2teams.connector (hasKey .Values.prom2teams.connectors "Connector") -}}
-{{- fail "Invalid configuration: prom2teams.connectors can't have a connector named Connector when prom2teams.connector is set"}}
+{{- if and .Values.prom2notify.connector (hasKey .Values.prom2notify.connectors "Connector") -}}
+{{- fail "Invalid configuration: prom2notify.connectors can't have a connector named Connector when prom2notify.connector is set"}}
 {{- end -}}
-{{- if and (not .Values.prom2teams.connector) (not .Values.prom2teams.connectors) -}}
+{{- if and (not .Values.prom2notify.connector) (not .Values.prom2notify.connectors) -}}
 {{- fail "Invalid configuration: At least one connector must be provided"}}
 {{- end -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prom2teams-config
+  name: prom2notify-config
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
   config.ini: |-
     [HTTP Server]
-    Host: {{ .Values.prom2teams.host }}
-    Port: {{ .Values.prom2teams.port }}
+    Host: {{ .Values.prom2notify.host }}
+    Port: {{ .Values.prom2notify.port }}
     [Microsoft Teams]
-    {{- with .Values.prom2teams.connector }}
+    {{- with .Values.prom2notify.connector }}
     Connector: {{ . }}
     {{- end }}
-    {{- range $key, $val := .Values.prom2teams.connectors }}
+    {{- range $key, $val := .Values.prom2notify.connectors }}
     {{ $key }}: {{ $val }}
     {{- end }}
     [Group Alerts]
-    Field: {{ .Values.prom2teams.group_alerts_by }}
+    Field: {{ .Values.prom2notify.group_alerts_by }}
     [Log]
-    Level: {{ .Values.prom2teams.loglevel }}
+    Level: {{ .Values.prom2notify.loglevel }}
     [Template]
-    Path: {{ .Values.prom2teams.templatepath }}
+    Path: {{ .Values.prom2notify.templatepath }}
   teams.j2: {{ .Files.Get "files/teams.j2" |  quote }}

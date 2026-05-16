@@ -9,7 +9,7 @@ with open('README.md', encoding='utf-8') as f:
     readme = f.read()
 
 
-setup(name='prom2teams',
+setup(name='prom2notify',
       version='5.0.0',
       description='Project that redirects Prometheus Alert Manager '
       'notifications to Microsoft Teams',
@@ -20,17 +20,17 @@ setup(name='prom2teams',
         'flake8'
       ],
       scripts=[
-          'bin/prom2teams',
-          'bin/prom2teams_uwsgi'
+          'bin/prom2notify',
+          'bin/prom2notify_uwsgi'
       ],
       package_data={
         '': ['*.ini', '*.j2', '*.ico'],
       },
       include_package_data=True,
       data_files=[
-          ('/usr/local/etc/prom2teams', ['bin/wsgi.py'])
+          ('/usr/local/etc/prom2notify', ['bin/wsgi.py'])
       ],
-      url='https://github.com/idealista/prom2teams',
+      url='https://github.com/idealista/prom2notify',
       author='Idealista, S.A.U',
       author_email='labs@idealista.com',
       license='Apache license 2.0',

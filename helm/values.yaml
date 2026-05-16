@@ -1,9 +1,9 @@
-# Default values for prom2teams.
+# Default values for prom2notify.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 image:
-  repository: idealista/prom2teams
+  repository: idealista/prom2notify
   tag:
   pullPolicy: IfNotPresent
 
@@ -20,7 +20,7 @@ service:
   port: 8089
   monitoring_port: 9090
 
-prom2teams:
+prom2notify:
   host: 0.0.0.0
   port: 8089
   monitoring_port: 9090
@@ -31,8 +31,8 @@ prom2teams:
   group_alerts_by:
   # loglevel can be one of (DEBUG | INFO | WARNING | ERROR | CRITICAL)
   loglevel: INFO
-  templatepath: /opt/prom2teams/helmconfig/teams.j2
-  config: /opt/prom2teams/helmconfig/config.ini
+  templatepath: /opt/prom2notify/helmconfig/teams.j2
+  config: /opt/prom2notify/helmconfig/config.ini
   extraEnv: {}
 
 # Security Context properties

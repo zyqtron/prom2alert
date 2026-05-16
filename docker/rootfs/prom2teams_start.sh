@@ -1,12 +1,12 @@
 #!/bin/sh
-python /opt/prom2teams/replace_config.py
+python /opt/prom2notify/replace_config.py
 
-if [ ! -f "/opt/prom2teams/config.ini" ]; then
-    mv /opt/prom2teams/config.ini.tmp /opt/prom2teams/config.ini
+if [ ! -f "/opt/prom2notify/config.ini" ]; then
+    mv /opt/prom2notify/config.ini.tmp /opt/prom2notify/config.ini
 fi
 
-if [ ! -f "/opt/prom2teams/uwsgi.ini" ]; then
-    mv /opt/prom2teams/uwsgi.ini.tmp /opt/prom2teams/uwsgi.ini
+if [ ! -f "/opt/prom2notify/uwsgi.ini" ]; then
+    mv /opt/prom2notify/uwsgi.ini.tmp /opt/prom2notify/uwsgi.ini
 fi
 
-uwsgi /opt/prom2teams/uwsgi.ini
+uwsgi /opt/prom2notify/uwsgi.ini

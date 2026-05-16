@@ -1,12 +1,12 @@
 [HTTP Server]
-Host: prom2teamshost
-Port: prom2teamsport
+Host: prom2notifyhost
+Port: prom2notifyport
 
 [Microsoft Teams]
-Connector: prom2teamsconnector
+Connector: prom2notifyconnector
 
 [Group Alerts]
-Field: prom2teamsgroupalertsby
+Field: prom2notifygroupalertsby
 
 [Log]
-Level: prom2teamslogslevel
+Level: prom2notifylogslevel
