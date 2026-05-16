@@ -15,6 +15,7 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/github/actions/workflow/status/zyqtron/prom2alert/ci.yml?branch=master&label=CI&logo=github" alt="CI">
   <img src="https://img.shields.io/badge/python-3.8_|_3.9_|_3.10_|_3.11_|_3.12_|_3.13_|_3.14-blue?logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/tests-28_%E2%9C%93-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/license-MIT-yellow" alt="License">
