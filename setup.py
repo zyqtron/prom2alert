@@ -10,43 +10,41 @@ with open('README.md', encoding='utf-8') as f:
 
 
 setup(name='prom2notify',
-      version='5.0.0',
-      description='Project that redirects Prometheus Alert Manager '
-      'notifications to Microsoft Teams',
+      version='0.2.0',
+      description='Multi-backend alert relay for Prometheus Alertmanager (Teams, Slack, Discord, Telegram, Generic Webhooks)',
       long_description=readme,
       long_description_content_type='text/markdown',
+      python_requires='>=3.9',
       install_requires=requirements,
-      setup_requires=[
-        'flake8'
-      ],
       scripts=[
           'bin/prom2notify',
           'bin/prom2notify_uwsgi'
       ],
       package_data={
-        '': ['*.ini', '*.j2', '*.ico'],
+          '': ['*.ini', '*.j2', '*.ico', '*.yml'],
       },
       include_package_data=True,
       data_files=[
           ('/usr/local/etc/prom2notify', ['bin/wsgi.py'])
       ],
-      url='https://github.com/idealista/prom2notify',
-      author='Idealista, S.A.U',
-      author_email='labs@idealista.com',
-      license='Apache license 2.0',
+      url='https://github.com/zyqtron/prom2notify',
+      author='zyqtron',
+      author_email='webmasteur1334@gmail.com',
+      license='MIT',
       packages=find_packages(exclude=('tests', 'docs')),
-      keywords='microsoft teams prometheus alert',
+      keywords='prometheus alertmanager teams slack discord telegram webhook',
       classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Topic :: Utilities',
-        'Topic :: Communications :: Chat',
-        'License :: OSI Approved :: Apache Software License',
-        'Intended Audience :: Developers',
-        'Intended Audience :: System Administrators',
-        'Topic :: System :: Monitoring',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10'
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: Developers',
+          'Intended Audience :: System Administrators',
+          'License :: OSI Approved :: MIT License',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
+          'Programming Language :: Python :: 3.12',
+          'Topic :: Communications :: Chat',
+          'Topic :: System :: Monitoring',
+          'Topic :: Utilities',
       ],
       zip_safe=False)

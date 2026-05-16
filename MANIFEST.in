@@ -1,7 +1,10 @@
 include README.md
 include LICENSE
+include CHANGELOG.md
 include requirements.txt
+include pyproject.toml
 include bin/wsgi.py
-include */config/*
-recursive-include */resources/ *
-recursive-include */app/static/ *
+recursive-include prom2notify/resources/ *
+recursive-include prom2notify/app/static/ *
+recursive-include prom2notify/config/ *
+recursive-include tests/data/ *.json

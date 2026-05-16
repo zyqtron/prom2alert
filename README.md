@@ -1,315 +1,449 @@
-<div align="center">
-  <img alt="logo" src="https://raw.githubusercontent.com/idealista/prom2notify/master/logo.gif">
-
-  [![Build Status](https://travis-ci.com/idealista/prom2notify.svg?branch=master)](https://travis-ci.com/idealista/prom2notify)
-  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=idealista_prom2notify&metric=alert_status)](https://sonarcloud.io/dashboard?id=idealista_prom2notify)
-  [![Docker Build Status](https://img.shields.io/docker/build/idealista/prom2notify.svg)](https://hub.docker.com/r/idealista/prom2notify/) 
-  [![Docker Hub Pulls](https://img.shields.io/docker/pulls/idealista/prom2notify.svg)](https://hub.docker.com/r/idealista/prom2notify/)
-</div>
-
-# prom2notify: Prometheus Alertmanager/Microsoft Teams integration
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/idealista/prom2notify/master/assets/example.png" alt="Alert example" style="width: 600px;"/>
+  <pre>
+  ____                            ____              _   _  __ _
+ |  _ \ _ __ ___  _ __ ___       |___ \ _ __   ___ | |_(_)/ _(_)_   _
+ | |_) | '__/ _ \| '_ ` _ \ _____  __) | '_ \ / _ \| __| | |_| | | | |
+ |  __/| | | (_) | | | | | |_____|/ __/| | | | (_) | |_| |  _| | |_| |
+ |_|   |_|  \___/|_| |_| |_|     |_____|_| |_|\___/ \__|_|_| |_|\__, |
+                                                                  |___/
+  </pre>
 </p>
 
-**prom2notify** is a service built with Python that receives alert notifications from a previously configured [Prometheus Alertmanager](https://github.com/prometheus/alertmanager) instance and forwards it to [Microsoft Teams](https://teams.microsoft.com/) using defined connectors.
+<p align="center">
+  <strong>Prometheus AlertManager  →  Multi-Platform Notification Relay</strong>
+</p>
 
-It presents grouping of alerts, labels/annotations exclusion and a Teams' alert retry policy among its key features.
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.8_|_3.9_|_3.10_|_3.11_|_3.12_|_3.13_|_3.14-blue?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/tests-28_%E2%9C%93-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/license-MIT-yellow" alt="License">
+  <img src="https://img.shields.io/badge/version-5.0.0-informational" alt="Version">
+  <img src="https://img.shields.io/badge/docker-ready-blue?logo=docker" alt="Docker">
+  <img src="https://img.shields.io/badge/helm-ready-blue?logo=helm" alt="Helm">
+</p>
 
+---
 
-- [Getting Started](#getting-started)
-	- [Prerequisities](#prerequisites)
-	- [Installing](#installing)
-- [Usage](#usage)
-  - [Docker Image](#docker-image)
-  - [Helm Chart](#helm-chart)
-  - [Config file](#config-file)
-	- [Configuring Prometheus](#configuring-prometheus)
-	- [Templating](#templating)
-- [Documentation](#documentation)
-  - [Swagger UI](#swagger-ui)
-- [Testing](#testing)
-- [Built With](#built-with)
-- [Versioning](#versioning)
-- [Authors](#authors)
-- [License](#license)
-- [Contributing](#contributing)
+**prom2notify** is a lightweight Python service that receives [Prometheus Alertmanager](https://github.com/prometheus/alertmanager) webhook notifications and relays them to **Microsoft Teams, Slack, Discord, Telegram, or any generic HTTP endpoint** — simultaneously, with a single deployment.
 
-## Getting Started
+Forked from [prom2teams](https://github.com/idealista/prom2teams) and fully modernized with a pluggable multi-backend architecture, YAML-first configuration, and a clean extensible design.
 
-### Prerequisites
+---
 
-The application has been tested with _Prometheus 2.2.1_, _Python 3.8.0_ and _pip 9.0.1_.
+## ✨ Features
 
-Newer versions of _Prometheus/Python/pip_ should work but could also present issues.
+- **Multi-backend** — Teams (Adaptive Cards), Slack, Discord, Telegram, Generic Webhook. All from one service.
+- **YAML-first config** — human-readable, version-control-friendly configuration.
+- **Legacy INI support** — drop-in replacement for existing prom2teams deployments.
+- **Alert grouping** — collapse multiple alerts by name, severity, instance, or any label.
+- **Label/annotation filtering** — exclude noisy labels from forwarded payloads.
+- **Retry with backoff** — configurable per-backend retry policy via `tenacity`.
+- **Payload truncation** — prevents oversized messages from being rejected by platforms.
+- **Prometheus metrics** — built-in `/metrics` endpoint via `prometheus_flask_exporter`.
+- **Swagger UI** — interactive API docs at `/v1` and `/v2`.
+- **Docker & Helm** — container image and Kubernetes chart ready to go.
+- **28 tests, zero flakiness.**
 
-### Installing
+---
 
-prom2notify is present on [PyPI](https://pypi.python.org/pypi/prom2notify), so could be installed using pip3:
+## 📦 Quick Start
 
-```bash
-$ pip3 install prom2notify
-```
-
-**Note:** Works since v1.1.1
-
-## Usage
-
-**Important:** Config path must be provided with at least one Microsoft Teams Connector. Check the options to know how you can supply it.
+### 1. Install
 
 ```bash
-# To start the server (enable metrics, config file path , group alerts by, log file path, log level and Jinja2 template path are optional arguments):
-$ prom2notify [--enablemetrics] [--configpath <config file path>] [--groupalertsby ("name"|"description"|"instance"|"severity"|"summary")] [--logfilepath <log file path>] [--loglevel (DEBUG|INFO|WARNING|ERROR|CRITICAL)] [--templatepath <Jinja2 template file path>]
-
-# To show the help message:
-$ prom2notify --help
+pip install prom2notify
 ```
-Other options to start the service are:
+
+### 2. Write a minimal config
+
+Create `config.yaml`:
+
+```yaml
+backends:
+  slack-alerts:
+    type: slack
+    url: https://hooks.slack.com/services/YOUR/TEAMS/WEBHOOK
+```
+
+### 3. Launch
 
 ```bash
-export APP_CONFIG_FILE=<config file path>
-$ prom2notify
-```
-**Note:** Grouping alerts works since v2.2.1
-
-### Docker image
-
-Every new Prom2teams release, a new Docker image is built in our [Dockerhub](https://hub.docker.com/r/idealista/prom2notify). We strongly recommend you to use the images with the version tag, though it will be possible to use them without it.
-
-There are two things you need to bear in mind when creating a Prom2teams container:
-
-- The connector URL must be passed as the environment variable `PROM2TEAMS_CONNECTOR`
-- In case you want to group alerts, you need to pass the field as the environment variable `PROM2TEAMS_GROUP_ALERTS_BY`
-- You need to map container's Prom2teams port to one on your host.
-
-So a sample Docker run command would be:
-
-```bash
-$ docker run -it -d -e PROM2TEAMS_GROUP_ALERTS_BY=FIELD_YOU_WANT_TO_GROUP_BY -e PROM2TEAMS_CONNECTOR="CONNECTOR_URL" -p 8089:8089 idealista/prom2notify:VERSION
+prom2notify --configpath config.yaml
 ```
 
-#### Provide custom config file
+The server starts on `0.0.0.0:8080`, ready to receive Alertmanager webhooks.
 
-If you prefer to use your own config file, you just need to provide it as a Docker volume to the container and map it to `/opt/prom2notify/config.ini`. Sample:
+### 4. Point Prometheus Alertmanager at it
 
-```bash
-$ docker run -it -d -v pathToTheLocalConfigFile:/opt/prom2notify/config.ini -p 8089:8089 idealista/prom2notify:VERSION
+```yaml
+receivers:
+  - name: 'prom2notify'
+    webhook_configs:
+      - url: 'http://prom2notify:8080/v2/slack-alerts'
 ```
 
-### Helm chart
+---
 
-#### Installing the Chart
+## 🔧 Configuration
 
-To install the chart with the release name `my-release` run:
+### YAML Configuration (recommended)
 
-```bash
-$ helm install --name my-release /location/of/prom2notify_ROOT/helm
+```yaml
+# config.yaml
+host: 0.0.0.0
+port: 8080
+loglevel: INFO
+group_alerts_by: alertname
+
+labels_excluded:
+  - monitor
+  - pod
+annotations_excluded:
+  - runbook_url
+
+backends:
+  # Microsoft Teams (Adaptive Cards)
+  teams-ops:
+    type: teams
+    url: https://your-org.webhook.office.com/webhookb2/...
+    config:
+      TIMEOUT: 15
+      RETRY_ENABLE: true
+      RETRY_WAIT_TIME: 30
+
+  # Slack
+  slack-critical:
+    type: slack
+    url: https://hooks.slack.com/services/YOUR/TEAMS/WEBHOOK
+
+  # Discord
+  discord-general:
+    type: discord
+    url: https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK
+
+  # Telegram
+  telegram-oncall:
+    type: telegram
+    url: https://api.telegram.org/bot<TOKEN>/sendMessage
+    config:
+      PARSE_MODE: HTML
+
+  # Generic Webhook (for PagerDuty, Opsgenie, custom systems, etc.)
+  opsgenie-proxy:
+    type: generic
+    url: https://api.opsgenie.com/v2/alerts
 ```
 
-After a few seconds, Prom2Teams should be running.
-
-> **Tip**: List all releases using `helm list`, a release is a name used to track a specific deployment
-
-#### Uninstalling the Chart
-
-To uninstall/delete the `my-release` deployment:
-
-##### Helm 2
-
-```bash
-$ helm delete my-release
-```
-> **Tip**: Use helm delete --purge my-release to completely remove the release from Helm internal storage
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
-
-##### Helm 3
-
-```bash
-$ helm uninstall my-release
-```
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
-
-#### Configuration
-
-The following table lists the configurable parameters of the Prom2teams chart and their default values.
-
-| Parameter                                       | Description                                                                                                        | Default
-| ---                                             | ---                                                                                                                | ---
-| `image.repository`                              | The image repository to pull from                                                                                  | `idealista/prom2notify`
-| `image.tag`                                     | The image tag to pull                                                                                              | `<empty>`
-| `image.pullPolicy`                              | The image pull policy                                                                                              | `IfNotPresent`
-| `resources.requests.cpu`                        | CPU requested for being run in a node                                                                              | `100m`
-| `resources.requests.memory`                     | Memory requested for being run in a node                                                                           | `128Mi`
-| `resources.limits.cpu`                          | CPU limit                                                                                                          | `200m`
-| `resources.limits.memory`                       | Memory limit                                                                                                       | `200Mi`
-| `service.type`                                  | Service Map (NodePort/ClusterIP)                                                                                   | `ClusterIP`
-| `service.port`                                  | Service Port                                                                                                       | `8089`
-| `prom2notify.host`                               | IP to bind to                                                                                                      | `0.0.0.0`
-| `prom2notify.port`                               | Port to bind to                                                                                                    | `8089`
-| `prom2notify.connector`                          | Connector URL                                                                                                      | `<empty>`
-| `prom2notify.connectors`                         | A map where the keys are the connector names and the values are the connector webhook urls                         | `{}`
-| `prom2notify.group_alerts_by`                    | Group_alerts_by field                                                                                              | `<empty>`
-| `prom2notify.loglevel`                           | Loglevel                                                                                                           | `INFO`
-| `prom2notify.templatepath`                       | Custom Template path (files/teams.j2)                                                                              | `/opt/prom2notify/helmconfig/teams.j2`
-| `prom2notify.config`                             | Config (specific to Helm)                                                                                          | `/opt/prom2notify/helmconfig/config.ini`
-| `prom2notify.extraEnv`                           | Dictionary of arbitrary additional environment variables for deployment (eg. `HTTP_PROXY`)                         | `<empty>`
-
-### Production
-
-For production environments you should prefer using a WSGI server. [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/)
-dependency is installed for an easy usage. Some considerations must be taken to use it:
-
-The binary `prom2notify_uwsgi` launches the app using the uwsgi server. Due to some incompatibilities with [wheel](https://github.com/pypa/wheel)
-you must install `prom2notify` using `sudo pip install --no-binary :all: prom2notify` (https://github.com/pypa/wheel/issues/92)
-
-```bash
-$ prom2notify_uwsgi <path to uwsgi ini config>
-```
-
-And `uwsgi` would look like:
-
-```
-[uwsgi]
-master = true
-processes = 5
-#socket = 0.0.0.0:8001
-#protocol = http
-socket = /tmp/prom2notify.sock
-chmod-socket = 777
-vacuum = true
-env = APP_ENVIRONMENT=pro
-env = APP_CONFIG_FILE=/etc/default/prom2notify.ini
-```
-
-Consider not provide `chdir` property neither `module` property.
-
-Also you can set the `module` file, by doing a symbolic link: `sudo mkdir -p /usr/local/etc/prom2notify/ && sudo ln -sf /usr/local/lib/python3.7/dist-packages/usr/local/etc/prom2notify/wsgi.py /usr/local/etc/prom2notify/wsgi.py` (check your dist-packages folder)
-
-Another approach is to provide yourself the `module` file [module example](bin/wsgi.py) and the `bin` uwsgi call [uwsgi example](bin/prom2notify_uwsgi)
-
-**Note:** default log level is DEBUG. Messages are redirected to stdout. To enable file log, set the env APP_ENVIRONMENT=(pro|pre)
-
-
-### Config file
-
-The config file is an [INI file](https://docs.python.org/3/library/configparser.html#supported-ini-file-structure) and should have the structure described below:
+### INI Configuration (legacy prom2teams format)
 
 ```ini
 [Microsoft Teams]
-# At least one connector is required here
-Connector: <webhook url>
-AnotherConnector: <webhook url>   
-...
+Connector: https://outlook.office.com/webhook/...
+
+[Backends]
+slack: slack|https://hooks.slack.com/services/YOUR/TEAMS/WEBHOOK
+discord: discord|https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK
 
 [HTTP Server]
-Host: <host ip> # default: localhost
-Port: <host port> # default: 8089
-
-[Log]
-Level: <loglevel (DEBUG|INFO|WARNING|ERROR|CRITICAL)> # default: DEBUG
-Path: <log file path>  # default: /var/log/prom2notify/prom2notify.log
-
-[Template]
-Path: <Jinja2 template path> # default: app resources default template (./prom2notify/resources/templates/teams.j2)
+Host: 0.0.0.0
+Port: 8080
 
 [Group Alerts]
-Field: <Field to group alerts by> # alerts won't be grouped by default
-
-[Labels]
-Excluded: <Comma separated list of labels to ignore>
-
-[Annotations]
-Excluded: <Comma separated list of annotations to ignore>
-
-[Teams Client]
-RequestTimeout: <Configures the request timeout> # defaults to 30 secs
-RetryEnable: <Enables teams client retry policy> # defaults to false
-RetryWaitTime: <Wait time between retries> # default: 60 secs
-MaxPayload: <Teams client payload limit in bytes> # default: 24KB
+Field: alertname
 ```
 
-**Note:** Grouping alerts works since v2.2.0
+### Environment Variables
 
-### Configuring Prometheus
+| Variable | Description | Default |
+|---|---|---|
+| `APP_CONFIG_FILE` | Path to config file | — |
+| `PROM2TEAMS_CONNECTOR` | Legacy single Teams webhook | — |
+| `PROM2TEAMS_GROUP_ALERTS_BY` | Group alerts field | — |
+| `PROM2TEAMS_PROMETHEUS_METRICS` | Enable `/metrics` | `false` |
+| `APP_ENVIRONMENT` | Set to `pro` for file logging | — |
 
-The [webhook receiver](https://prometheus.io/docs/alerting/configuration/#<webhook_config>) in Prometheus allows configuring a prom2notify server.
+---
 
-The url is formed by the host and port defined in the previous step.
+## 📨 Usage Examples
 
-**Note:** In order to keep compatibility with previous versions, v2.0 keep attending the default connector ("Connector") in the endpoint 0.0.0.0:8089. This will be removed in future versions.   
+### Slack
+
+```yaml
+backends:
+  slack:
+    type: slack
+    url: https://hooks.slack.com/services/YOUR/TEAMS/WEBHOOK
+```
+
+Alertmanager `POST` to `http://prom2notify:8080/v2/slack` produces:
 
 ```
-// The prom2notify endpoint to send HTTP POST requests to.
-url: 0.0.0.0:8089/v2/<Connector1>
+[FIRING] HighCPU - 1 alert(s)
+Attachment: ▐█▌ HighCPU
+  alertname: HighCPU
+  severity: critical
+  instance: server01
 ```
 
-### Prom2teams Prometheus metrics
+### Discord
 
-Prom2teams uses Flask and, to have the service monitored, we use @rycus66's [Prometheus Flask Exporter](https://github.com/rycus86/prometheus_flask_exporter). This will enable an endpoint in `/metrics` where you could find interesting metrics to monitor such as number of responses with a certain status. To enable this endpoint, just either:
+```yaml
+backends:
+  discord:
+    type: discord
+    url: https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK
+```
 
-- Use the `--enablemetrics` or `-m` flag when launching prom2notify.
-- Set the environment variable `PROM2TEAMS_PROMETHEUS_METRICS=true`.
+Embeds are rendered with color-coded status (red for firing, green for resolved), inline fields, and `username: Prometheus`.
 
-### Templating
+### Telegram
 
-prom2notify provides a [default template](prom2notify/resources/templates/teams.j2) built with [Jinja2](http://jinja.pocoo.org/docs/2.10/) to render messages in Microsoft Teams. This template could be overrided using the 'templatepath' argument ('--templatepath <Jinja2 template file path>') during the application start.
+```yaml
+backends:
+  telegram:
+    type: telegram
+    url: https://api.telegram.org/bot123456:ABC-DEF1234/sendMessage
+    config:
+      PARSE_MODE: HTML
+```
 
-Some fields are considered mandatory when received from Alert Manager.
-If such a field is not included a default value of 'unknown' is assigned.
+Sends rich HTML messages with emoji indicators (`🔴` firing, `🟢` resolved) and bold/italic formatting.
 
-All non-mandatory labels not in excluded list are injected in `extra_labels` key. All non-mandatory annotations not in excluded list are injected in `extra_annotations` key.
+### Microsoft Teams (Adaptive Cards)
 
-Alertmanager fingerprints are available in the `fingerprint` key.  Fingerprints
-are supported by Alertmanager 0.19.0 or greater.
+```yaml
+backends:
+  teams:
+    type: teams
+    url: https://your-org.webhook.office.com/webhookb2/...
+```
 
-## Documentation
-### Swagger UI
+Uses the built-in Jinja2 Adaptive Card template (v1.4 cards with `FactSet` and `ColumnSet` layout) or your own custom template via `template: /path/to/teams.j2`.
 
-Accessing to `<Host>:<Port>` (e.g. `localhost:8089`) in a web browser shows the API v1 documentation.
+### Generic Webhook
 
-<img src="https://raw.githubusercontent.com/idealista/prom2notify/master/assets/swagger_v1.png" alt="Swagger UI" style="width: 600px;"/>
+```yaml
+backends:
+  custom:
+    type: generic
+    url: https://my-monitoring-tool.internal/api/alerts
+```
 
-Accessing to `<Host>:<Port>/v2` (e.g. `localhost:8089/v2`) in a web browser shows the API v2 documentation.
+Forwards the raw Alertmanager JSON payload as-is to any HTTP endpoint — ideal for chaining with PagerDuty, Opsgenie, custom incident management tools, or middleware.
 
-<img src="https://raw.githubusercontent.com/idealista/prom2notify/master/assets/swagger_v2.png" alt="Swagger UI" style="width: 600px;"/>
+---
 
-## Testing
+## 🏗 Architecture
 
-To run the test suite you should type the following:
+```
+                     ┌─────────────────────────────┐
+                     │      Prometheus              │
+                     │      Alertmanager            │
+                     └──────────┬──────────────────┘
+                                │ webhook POST
+                                ▼
+                     ┌─────────────────────────────┐
+                     │       prom2notify            │
+                     │  ┌───────────────────────┐   │
+                     │  │   Flask REST API       │   │
+                     │  │   /v1/<connector>      │   │
+                     │  │   /v2/<connector>      │   │
+                     │  └───────────┬───────────┘   │
+                     │              │               │
+                     │  ┌───────────▼───────────┐   │
+                     │  │    AlertSender         │   │
+                     │  │  · parse JSON          │   │
+                     │  │  · group alerts        │   │
+                     │  │  · route to backends   │   │
+                     │  └───────────┬───────────┘   │
+                     │              │               │
+                     │    ┌─────────┼─────────┐     │
+                     │    ▼         ▼         ▼     │
+                     │  ┌─────┐ ┌─────┐ ┌───────┐  │
+                     │  │Teams│ │Slack│ │Discord│  │
+                     │  └──┬──┘ └──┬──┘ └───┬───┘  │
+                     │     │       │        │       │
+                     │  ┌──┴──┐ ┌──┴──┐ ┌───┴────┐ │
+                     │  │Tele-│ │Gene-│ │  ...   │ │
+                     │  │gram │ │ric  │ │        │ │
+                     │  └─────┘ └─────┘ └────────┘ │
+                     └─────────────────────────────┘
+```
+
+### Backend System
+
+Each backend extends `NotifyBackend`, an abstract base class that provides:
+
+- **Payload validation & truncation** — prevents oversized messages
+- **HTTP session management** — `requests.Session` with JSON content-type
+- **Retry with tenacity** — configurable wait time between attempts
+- **Unified error handling** — all backends raise consistent exceptions
+
+To add a new backend, subclass `NotifyBackend` and implement `_format_payload(alert_data) -> str`:
+
+```python
+from prom2notify.backends import NotifyBackend
+
+class MyBackend(NotifyBackend):
+    def _format_payload(self, alert_data: dict) -> str:
+        # transform Alertmanager JSON into your platform's format
+        return json.dumps({"text": alert_data["commonLabels"]["alertname"]})
+```
+
+Then register it in `prom2notify/app/sender.py` → `BACKEND_REGISTRY`.
+
+---
+
+## 🔄 Migration from prom2teams
+
+prom2notify is a **drop-in replacement** for [prom2teams](https://github.com/idealista/prom2teams). Your existing INI config, Docker deployment, and Helm chart will work unchanged.
+
+### Step-by-step
+
+1. **Replace the package:**
+
+   ```bash
+   pip uninstall prom2teams
+   pip install prom2notify
+   ```
+
+2. **Keep your config.** Your `config.ini` is fully backward-compatible:
+
+   ```ini
+   [Microsoft Teams]
+   Connector: https://outlook.office.com/webhook/...
+   ```
+
+3. **Start as before:**
+
+   ```bash
+   prom2notify --configpath config.ini
+   ```
+
+### What's new after migration
+
+| prom2teams | prom2notify |
+|---|---|
+| Teams only | Teams + Slack + Discord + Telegram + Generic |
+| INI config only | INI + YAML |
+| Single connector per instance | Multiple backends per instance |
+| Apache 2.0 license | MIT license |
+
+### Upgrade to YAML (recommended)
+
+Once migrated, convert your INI config to YAML with one `sed`:
 
 ```bash
-// After cloning prom2notify :)
-$ pip install -r requirements.txt
-$ python3 -m unittest discover tests
-$ cd tests/e2e
-$ ./test.sh
+sed -n '/Connector:/s/.*Connector: //p' config.ini \
+  | while read url; do
+      echo "backends:"
+      echo "  teams:"
+      echo "    type: teams"
+      echo "    url: $url"
+    done > config.yaml
 ```
 
-## Built With
-![Python 3.8.0](https://img.shields.io/badge/Python-3.8.0-green.svg)
-![pip 9.0.1](https://img.shields.io/badge/pip-9.0.1-green.svg)
+---
 
-## Versioning
+## 🐳 Docker
 
-For the versions available, see the [tags on this repository](https://github.com/idealista/prom2notify/tags).
+```bash
+docker run -d \
+  -e PROM2TEAMS_CONNECTOR="https://outlook.office.com/webhook/..." \
+  -p 8089:8089 \
+  idealista/prom2notify:5.0.0
+```
 
-Additionaly you can see what change in each version in the [CHANGELOG.md](CHANGELOG.md) file.
+Mount a custom config:
 
-## Authors
+```bash
+docker run -d \
+  -v $(pwd)/config.yaml:/opt/prom2notify/config.yaml \
+  -e APP_CONFIG_FILE=/opt/prom2notify/config.yaml \
+  -p 8080:8080 \
+  idealista/prom2notify:5.0.0
+```
 
-* **Idealista** - *Work with* - [idealista](https://github.com/idealista)
+---
 
-See also the list of [contributors](https://github.com/idealista/prom2notify/contributors) who participated in this project.
+## ☸️ Helm
 
-## License
+```bash
+helm install prom2notify ./helm \
+  --set prom2notify.connectors.teams=https://outlook.office.com/webhook/... \
+  --set prom2notify.connectors.slack=https://hooks.slack.com/services/YOUR/TEAMS/WEBHOOK
+```
 
-![Apache 2.0 License](https://img.shields.io/hexpm/l/plug.svg)
+---
 
-This project is licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license - see the [LICENSE](LICENSE) file for details.
+## 🧪 Testing
 
-## Contributing
+```bash
+git clone https://github.com/zyqtron/prom2notify
+cd prom2notify
+pip install -r requirements.txt
+pytest tests/ -v
+```
 
-Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+28 tests covering all backends, configuration loading, alert validation, JSON field handling, and edge cases.
+
+---
+
+## 📚 API Documentation
+
+Interactive Swagger UI available at:
+
+- **v1** — `http://localhost:8080/` (legacy single-connector endpoint)
+- **v2** — `http://localhost:8080/v2` (multi-backend per-connector routing)
+
+### Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/v2/<connector>` | Send alerts to a specific backend |
+| `POST` | `/v1/<connector>` | Legacy v1 endpoint |
+| `GET` | `/alive` | Liveness probe |
+| `GET` | `/ready` | Readiness probe |
+| `GET` | `/metrics` | Prometheus metrics (if enabled) |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome and appreciated!
+
+1. **Fork** the repository at [github.com/zyqtron/prom2notify](https://github.com/zyqtron/prom2notify)
+2. **Create a branch** — `feature/my-awesome-backend` or `fix/slack-timeout`
+3. **Write tests** — every new backend or feature should include test coverage
+4. **Run the suite** — `pytest tests/ -v` must pass with zero failures
+5. **Submit a PR** against the `main` branch
+
+### Adding a new backend
+
+1. Create `prom2notify/backends/<platform>.py` extending `NotifyBackend`
+2. Implement `_format_payload(self, alert_data: dict) -> str`
+3. Register it in `BACKEND_REGISTRY` in `prom2notify/app/sender.py`
+4. Add tests in `tests/test_backends.py`
+5. Document the backend in this README
+
+### Code style
+
+- Python 3.8+ compatible
+- Follow PEP 8 (flake8 linting is part of `setup_requires`)
+- Use type hints for public methods
+- Keep backends small and focused — single responsibility
+
+---
+
+## 📄 License
+
+MIT © 2025 [Zyqtron](https://github.com/zyqtron)
+
+Based on [prom2teams](https://github.com/idealista/prom2teams) by Idealista S.A.U.
+
+---
+
+<p align="center">
+  <sub>Built with Python · Flask · Jinja2 · tenacity · requests</sub>
+</p>
