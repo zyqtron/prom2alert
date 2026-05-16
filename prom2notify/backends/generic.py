@@ -2,6 +2,7 @@
 """prom2notify.backends.generic — Generic webhook connector."""
 
 import json
+
 from prom2notify.backends import NotifyBackend
 
 

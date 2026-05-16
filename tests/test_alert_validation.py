@@ -1,8 +1,9 @@
-import unittest
 import os
+import unittest
 
-from prom2notify.teams.teams_alert_validation import remove_double_quotes_from_teams_alert
 from prom2notify.teams.teams_alert_schema import TeamsAlert
+from prom2notify.teams.teams_alert_validation import \
+    remove_double_quotes_from_teams_alert
 
 ALERT = {
     "name": "Watchdog",

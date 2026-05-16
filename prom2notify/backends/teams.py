@@ -3,6 +3,7 @@
 
 import json
 import logging
+
 from prom2notify.backends import NotifyBackend
 
 log = logging.getLogger('prom2notify')

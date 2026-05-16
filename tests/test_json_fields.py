@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Tests for Prometheus alert JSON processing — adapted for multi-backend."""
-import unittest
-import os
 import json
+import os
+import unittest
 
-from prom2notify.prometheus.message_schema import MessageSchema
 from prom2notify.app.sender import AlertSender
+from prom2notify.prometheus.message_schema import MessageSchema
 
 
 class TestJSONFields(unittest.TestCase):

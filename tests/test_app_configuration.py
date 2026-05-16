@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Tests for prom2notify configuration — adapted for YAML/INI hybrid loader."""
 
-import unittest
-import os
 import json
+import os
+import unittest
 
-from prom2notify.app import configuration
-from prom2notify.app import exceptions
+from prom2notify.app import configuration, exceptions
 
 
 class TestServer(unittest.TestCase):

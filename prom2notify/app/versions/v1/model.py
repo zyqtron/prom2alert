@@ -1,4 +1,5 @@
 from flask_restx import fields
+
 from . import api_v1
 
 annotations = api_v1.model('annotations', {

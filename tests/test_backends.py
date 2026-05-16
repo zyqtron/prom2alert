@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Tests for prom2notify backends."""
 import json
+
 import pytest
-from prom2notify.backends.slack import SlackBackend
-from prom2notify.backends.discord import DiscordBackend
-from prom2notify.backends.telegram import TelegramBackend
-from prom2notify.backends.generic import GenericWebhookBackend
+
 from prom2notify.backends import NotifyBackend
+from prom2notify.backends.discord import DiscordBackend
+from prom2notify.backends.generic import GenericWebhookBackend
+from prom2notify.backends.slack import SlackBackend
+from prom2notify.backends.telegram import TelegramBackend
 
 
 class _TestBackend(NotifyBackend):

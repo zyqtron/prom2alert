@@ -6,7 +6,6 @@ from jinja2 import Environment, FileSystemLoader
 from prom2notify import root
 from prom2notify.app.exceptions import MissingTemplatePathException
 
-
 log = logging.getLogger('prom2notify')
 
 

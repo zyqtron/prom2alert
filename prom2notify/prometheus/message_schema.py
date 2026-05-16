@@ -1,5 +1,6 @@
-from marshmallow import Schema, fields, post_load, EXCLUDE, INCLUDE
 import logging
+
+from marshmallow import EXCLUDE, INCLUDE, Schema, fields, post_load
 
 log = logging.getLogger('prom2notify')
 

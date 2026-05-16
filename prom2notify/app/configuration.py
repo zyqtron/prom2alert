@@ -167,7 +167,8 @@ def _setup_metrics(application):
             from prometheus_flask_exporter import PrometheusMetrics
             PrometheusMetrics(application)
         else:
-            from prometheus_flask_exporter.multiprocess import UWsgiPrometheusMetrics
+            from prometheus_flask_exporter.multiprocess import \
+                UWsgiPrometheusMetrics
             metrics = UWsgiPrometheusMetrics(application)
             metrics.start_http_server(int(os.getenv('PROMETHEUS_MULTIPROC_PORT', 9100)))
 

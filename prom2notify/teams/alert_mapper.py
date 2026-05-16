@@ -1,7 +1,8 @@
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict, defaultdict
 
 from prom2notify.teams.teams_alert_schema import TeamsAlert, TeamsAlertSchema
-from prom2notify.teams.teams_alert_validation import remove_double_quotes_from_teams_alert
+from prom2notify.teams.teams_alert_validation import \
+    remove_double_quotes_from_teams_alert
 
 GROUPABLE_FIELDS = ['name', 'description', 'instance',
                     'severity', 'status', 'summary', 'fingerprint', 'runbook_url']

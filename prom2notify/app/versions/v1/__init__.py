@@ -1,4 +1,5 @@
 import logging
+
 from flask_restx import Api
 
 log = logging.getLogger(__name__)

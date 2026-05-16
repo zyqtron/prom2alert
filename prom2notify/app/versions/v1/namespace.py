@@ -1,10 +1,12 @@
 import warnings
 
-from flask import request, current_app as app
+from flask import current_app as app
+from flask import request
 from flask_restx import Resource
 
 from prom2notify.app.sender import AlertSender
 from prom2notify.prometheus.message_schema import MessageSchema
+
 from .model import *
 
 ns = api_v1.namespace(name='', description='Version 1 connections')

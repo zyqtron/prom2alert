@@ -1,10 +1,13 @@
-from flask import request, current_app as app
+from flask import current_app as app
+from flask import request
 from flask_restx import Resource
+from marshmallow import EXCLUDE
 
 from prom2notify.app.sender import AlertSender
 from prom2notify.prometheus.message_schema import MessageSchema
+
 from .model import *
-from marshmallow import EXCLUDE
+
 ns = api_v2.namespace(name='', description='Version 2 connections')
 
 

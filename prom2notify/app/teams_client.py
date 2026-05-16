@@ -1,7 +1,8 @@
 import json
 import logging
+
 import requests
-from tenacity import retry, wait_fixed, after_log
+from tenacity import after_log, retry, wait_fixed
 
 from .exceptions import MicrosoftTeamsRequestException
 

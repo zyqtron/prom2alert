@@ -7,12 +7,13 @@ Dispatches Prometheus alerts to any configured notification backend.
 
 import logging
 
-from prom2notify.backends.teams import TeamsBackend, TeamsTemplateBackend
-from prom2notify.backends.slack import SlackBackend
 from prom2notify.backends.discord import DiscordBackend
-from prom2notify.backends.telegram import TelegramBackend
 from prom2notify.backends.generic import GenericWebhookBackend
-from prom2notify.teams.alert_mapper import map_and_group, map_prom_alerts_to_teams_alerts
+from prom2notify.backends.slack import SlackBackend
+from prom2notify.backends.teams import TeamsBackend, TeamsTemplateBackend
+from prom2notify.backends.telegram import TelegramBackend
+from prom2notify.teams.alert_mapper import (map_and_group,
+                                            map_prom_alerts_to_teams_alerts)
 from prom2notify.teams.composer import TemplateComposer
 
 log = logging.getLogger('prom2notify')

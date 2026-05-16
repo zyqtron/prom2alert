@@ -1,10 +1,11 @@
 import logging.config
 import os
 
-from flask import Flask, Blueprint, send_from_directory
+from flask import Blueprint, Flask, send_from_directory
 from marshmallow.exceptions import ValidationError
 
 from prom2notify.app.configuration import config_app, setup_logging
+
 from .exceptions import MicrosoftTeamsRequestException
 from .versions.v1 import api_v1
 from .versions.v1.namespace import ns as ns_v1
