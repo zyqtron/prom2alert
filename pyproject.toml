@@ -40,6 +40,12 @@ dependencies = [
     "werkzeug>=3.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+]
+
 [project.urls]
 Homepage = "https://github.com/zyqtron/prom2notify"
 Repository = "https://github.com/zyqtron/prom2notify"

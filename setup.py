@@ -16,6 +16,12 @@ setup(name='prom2notify',
       long_description_content_type='text/markdown',
       python_requires='>=3.9',
       install_requires=requirements,
+      extras_require={
+          'dev': [
+              'pytest',
+              'pytest-cov',
+          ],
+      },
       scripts=[
           'bin/prom2notify',
           'bin/prom2notify_uwsgi'
