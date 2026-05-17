@@ -14,7 +14,7 @@ class MessageSchema(Schema):
         self.exclude_annotations = exclude_annotations
 
     receiver = fields.Str()
-    status = fields.Str(default='unknown', missing='unknown')
+    status = fields.Str(dump_default='unknown', load_default='unknown')
     alerts = fields.Nested('AlertSchema', many=True)
     groupKey = fields.Str()
     externalURL = fields.Str()
@@ -65,7 +65,7 @@ class MessageSchema(Schema):
 
 
 class AlertSchema(Schema):
-    status = fields.Str(default='unknown', missing='unknown')
+    status = fields.Str(dump_default='unknown', load_default='unknown')
     labels = fields.Nested('LabelSchema', many=False, unknown=INCLUDE)
     annotations = fields.Nested('AnnotationSchema', many=False, unknown=INCLUDE)
     startsAt = fields.DateTime()
@@ -76,18 +76,18 @@ class AlertSchema(Schema):
         unknown = EXCLUDE
 
 class LabelSchema(Schema):
-    alertname = fields.Str(default='unknown', missing='unknown')
+    alertname = fields.Str(dump_default='unknown', load_default='unknown')
     device = fields.Str()
     fstype = fields.Str()
-    instance = fields.Str(default='unknown', missing='unknown')
+    instance = fields.Str(dump_default='unknown', load_default='unknown')
     job = fields.Str()
     mountpoint = fields.Str()
-    severity = fields.Str(default='unknown', missing='unknown')
+    severity = fields.Str(dump_default='unknown', load_default='unknown')
 
 
 class AnnotationSchema(Schema):
-    description = fields.Str(default='unknown', missing='unknown')
-    summary = fields.Str(default='unknown', missing='unknown')
+    description = fields.Str(dump_default='unknown', load_default='unknown')
+    summary = fields.Str(dump_default='unknown', load_default='unknown')
 
 
 class PrometheusAlert:
